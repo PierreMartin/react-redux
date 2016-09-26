@@ -14,12 +14,12 @@ const todo = (state, action) => {
             };
         case 'TOGGLE_TODO':
             if (state.id !== action.id) {
-                return state;
+                return state; // chaque todos dont l'id ne correspond pas à l'ID spécifié dans l'action, on renvoie juste l'état précédent
             }
-            //
+
             return {
-                ...state,
-                completed: !state.completed
+                ...state,                           // on recupere les propriétés du todo original
+                completed: !state.completed         // cette propriété aura une valeur inverse de l'original
             };
         default:
             return state;
@@ -36,7 +36,9 @@ const todos = (state = [], action) => {
                 todo(undefined, action)                                     // ICI L'APPEL FONCTION
             ];
         case 'TOGGLE_TODO':
-            return stat.map(t => todo(t, action));                          // ICI L'APPEL FONCTION
+            return state.map(t =>
+                todo(t, action)                                             // ICI L'APPEL FONCTION
+            );
         default:
             return state;
     }
@@ -91,7 +93,18 @@ class TodoApp extends Component {
 
                 <ul>
                     {this.props.todos.map(todo =>
-                        <li key={todo.id}>
+                        <li
+                            key={todo.id}
+                            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+
+                            onClick={ () => {
+                              store.dispatch({
+                                type: 'TOGGLE_TODO',
+                                id: todo.id
+                              });
+                            }}
+                        >
+
                             {todo.text}
                         </li>
                     )}
