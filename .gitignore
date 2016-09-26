@@ -1,0 +1,12 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Mac
+.DS_Store
+
+# App
+node_modules/
+dist/
