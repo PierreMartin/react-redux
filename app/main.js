@@ -111,7 +111,7 @@ const TodoList = ({todos, onTodoClick}) => (
 );
 
 
-/**** Add todo1 ****/
+/**** Add todos ****/
 const AddTodo = ({onAddClick}) => {
     let input;
 
@@ -133,9 +133,9 @@ const AddTodo = ({onAddClick}) => {
 
 
 /**** Filter todos ****/
-const FilterLink = ({filter, currentFilter, children, onClick}) => {
-    if (filter === currentFilter) {
-        return <span>{children}</span>; // permet de supprimer le lien lorque l'on a cliqué dessus
+const Link = ({active, children, onClick}) => {
+    if (active) {
+        return <span>{children}</span>;
     }
 
     return (
@@ -143,7 +143,7 @@ const FilterLink = ({filter, currentFilter, children, onClick}) => {
             href='#'
             onClick={e => {
                 e.preventDefault();
-                onClick(filter);
+                onClick();
             }}
         >
             {children}
@@ -151,22 +151,56 @@ const FilterLink = ({filter, currentFilter, children, onClick}) => {
     );
 };
 
-const Footer = ({visibilityFilter, onFilterClick}) => (
+
+// Composant conteneur. Il fournit les données (sans passer par le parent) et le comportement pour "Link"
+class FilterLink extends Component {
+    componentDidMount() {
+        this.unsubscribe = store.subscribe(() =>    /* rend le state dispatché */
+            this.forceUpdate()                      /* methode react pour forcer le rendu à nouveau */
+        );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    render() {
+        const props = this.props;
+        const state = store.getState();
+
+        return (
+            <Link
+                active={props.filter === state.visibilityFilter}
+                onClick={() =>
+                    store.dispatch({
+                        type: 'SET_VISIBILITY_FILTER',
+                        filter: props.filter
+                    })
+                }
+            >
+                {props.children}
+            </Link>
+        );
+    }
+}
+
+
+const Footer = () => (
     <p>
         Show :
 
         {' '}
-        <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter} onClick={onFilterClick}> {/* this.props.visibilityFilter */}
+        <FilterLink filter='SHOW_ALL'>
             all
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter} onClick={onFilterClick}>
+        <FilterLink filter='SHOW_ACTIVE'>
             active
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter} onClick={onFilterClick}>
+        <FilterLink filter='SHOW_COMPLETED'>
             completed
         </FilterLink>
 
@@ -203,15 +237,7 @@ const TodoApp = ({todos, visibilityFilter}) => (
 
 
             {/*********** FILTER  ***********/}
-            <Footer
-                visibilityFilter={visibilityFilter}     /* désactive le lien si deja cliqué */
-                onFilterClick={filter =>                /* à chaque clique, on dispatch une action */
-                    store.dispatch({
-                      type: 'SET_VISIBILITY_FILTER',
-                      filter
-                    })
-                }
-            />
+            <Footer />
 
         </div>
 
