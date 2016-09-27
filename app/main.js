@@ -87,6 +87,28 @@ const getVisibleTodos = (todos, filter) => {
 const { Component } = React;
 let nextTodoId      = 0;
 
+// presentational componant (ne précise pas de comportement) :
+const Todo = ({onClick, completed, text}) => (
+    <li
+        style={{ textDecoration: completed ? 'line-through' : 'none' }}
+        onClick={onClick}
+    >
+        {text}
+    </li>
+);
+
+// presentational componant :
+const TodoList = ({todos, onTodoClick}) => (
+    <ul>
+        {todos.map(todo =>
+            <Todo
+                key={todo.id}       /* key unique pour les elements html */
+                {...todo}           /* chaque propriété de 'todo' sera passé comme 'props'  => this.props.completed + this.props.text */
+                onClick={() => onTodoClick(todo.id)}
+            />
+        )}
+    </ul>
+);
 
 const FilterLink = ({filter, currentFilter, children}) => {
     if (filter === currentFilter) {
@@ -110,7 +132,7 @@ const FilterLink = ({filter, currentFilter, children}) => {
 };
 
 
-
+// TOP LEVEL COMPONANT :
 class TodoApp extends Component {
     render() {
         // FILTER :
@@ -120,7 +142,8 @@ class TodoApp extends Component {
 
         return (
             <div>
-                
+
+                {/*********** ADD TODO ***********/}
                 <input ref={node => {
                   this.input = node; // node = "input"
                 }} />
@@ -136,24 +159,18 @@ class TodoApp extends Component {
                     Ajouter une todos
                 </button>
 
-                <ul>
-                    {visibleTodos.map(todo =>
-                        <li
-                            key={todo.id}
-                            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
 
-                            onClick={ () => {
-                              store.dispatch({
-                                type: 'TOGGLE_TODO',
-                                id: todo.id
-                              });
-                            }}
-                        >
+                {/*********** LIST TODO ***********/}
+                <TodoList
+                    todos={visibleTodos}
+                    onTodoClick={id =>
+                        store.dispatch ({
+                            type: 'TOGGLE_TODO',
+                            id
+                        })
+                    }
+                />
 
-                            {todo.text}
-                        </li>
-                    )}
-                </ul>
 
                 {/*********** FILTER  ***********/}
                 <p>
