@@ -67,12 +67,57 @@ const todoApp = combineReducers({
 const store = createStore(todoApp);
 
 
+/*************************** FUNCTIONS **************************/
+const getVisibleTodos = (todos, filter) => {
+    switch (filter) {
+        case 'SHOW_ALL':
+            return todos;
+        case 'SHOW_COMPLETED':
+            return todos.filter(
+                t => t.completed    // retourne tout les elements du tableau dont la propriété "completed" est à 'true'
+            );
+        case 'SHOW_ACTIVE':
+            return todos.filter(
+                t => !t.completed   // retourne tout les elements du tableau dont la propriété "completed" est à 'false'
+            );
+    }
+};
+
 /*************************** LES COMPONANTS **************************/
 const { Component } = React;
+let nextTodoId      = 0;
 
-let nextTodoId = 0;
+
+const FilterLink = ({filter, currentFilter, children}) => {
+    if (filter === currentFilter) {
+        return <span>{children}</span>; // permet de supprimer le lien lorque l'on a cliqué dessus
+    }
+
+    return (
+        <a
+            href='#'
+            onClick={e => {
+                e.preventDefault();
+                store.dispatch({
+                    type: 'SET_VISIBILITY_FILTER',
+                    filter
+                })
+            }}
+        >
+            {children}
+        </a>
+    );
+};
+
+
+
 class TodoApp extends Component {
     render() {
+        // FILTER :
+        // const visibleTodos = getVisibleTodos(this.props.todos, this.props.visibilityFilter);
+        const { todos, visibilityFilter } = this.props;
+        const visibleTodos = getVisibleTodos(todos, visibilityFilter);
+
         return (
             <div>
                 
@@ -92,7 +137,7 @@ class TodoApp extends Component {
                 </button>
 
                 <ul>
-                    {this.props.todos.map(todo =>
+                    {visibleTodos.map(todo =>
                         <li
                             key={todo.id}
                             style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
@@ -110,6 +155,27 @@ class TodoApp extends Component {
                     )}
                 </ul>
 
+                {/*********** FILTER  ***********/}
+                <p>
+                    Show :
+
+                    {' '}
+                    <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter}> {/* this.props.visibilityFilter */}
+                        all
+                    </FilterLink>
+
+                    {' '}
+                    <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter}>
+                        active
+                    </FilterLink>
+
+                    {' '}
+                    <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter}>
+                        completed
+                    </FilterLink>
+
+                </p>
+
             </div>
         );
     }
@@ -119,7 +185,7 @@ class TodoApp extends Component {
 // fonction qui va rendre les stats du store
 const render = () => {
     ReactDOM.render(
-        <TodoApp todos={store.getState().todos} />,
+        <TodoApp {...store.getState()} />, // chaque state est passé comme 'props'  => this.props.todos + this.props.visibilityFilter
         document.getElementById('root')
     );
 };
