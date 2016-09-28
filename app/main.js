@@ -84,7 +84,9 @@ const getVisibleTodos = (todos, filter) => {
 const { Component } = React;
 let nextTodoId      = 0;
 
-/**** Todos ****/
+/**** Todos
+ *
+ * ****/
 const Todo = ({onClick, completed, text}) => (
     <li
         style={{ textDecoration: completed ? 'line-through' : 'none' }}
@@ -109,7 +111,7 @@ const TodoList = ({todos, onTodoClick}) => (
 
 class VisibleTodoList extends Component {
     componentDidMount() {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() =>    /* rend le state dispatché */
             this.forceUpdate()                      /* methode react pour forcer le rendu à nouveau */
         );
@@ -121,7 +123,7 @@ class VisibleTodoList extends Component {
 
     render() {
         const props = this.props;
-        const { store } = props;
+        const { store } = this.context;
         const state = store.getState();
 
         return (
@@ -139,8 +141,11 @@ class VisibleTodoList extends Component {
 }
 
 
-/**** Add todos ****/
-const AddTodo = ({ store }) => {
+/**** Add todos
+ *  le store est disponible en 2eme params
+ *  - dans les classes on ferait => const { store } = this.context; )
+ *  ****/
+const AddTodo = (props, { store }) => {
     let input;
 
     return (
@@ -167,7 +172,9 @@ const AddTodo = ({ store }) => {
 };
 
 
-/**** Filter todos ****/
+/**** Filter todos
+ *
+ * ****/
 const Link = ({active, children, onClick}) => {
     if (active) {
         return <span>{children}</span>;
@@ -187,10 +194,10 @@ const Link = ({active, children, onClick}) => {
 };
 
 
-// Composant conteneur. Il fournit les données (sans passer par le parent) et le comportement pour "Link"
+// Composant containeur. Il fournit les données (sans passer par le parent) et le comportement pour "Link"
 class FilterLink extends Component {
     componentDidMount() {
-        const { store } = this.props;
+        const { store } = this.context;
         this.unsubscribe = store.subscribe(() =>    /* rend le state dispatché */
             this.forceUpdate()                      /* methode react pour forcer le rendu à nouveau */
         );
@@ -202,7 +209,7 @@ class FilterLink extends Component {
 
     render() {
         const props = this.props;
-        const { store } = props;
+        const { store } = this.context;
         const state = store.getState();
 
         return (
@@ -222,22 +229,22 @@ class FilterLink extends Component {
 }
 
 
-const Footer = ({ store }) => (
+const Footer = () => (
     <p>
         Show :
 
         {' '}
-        <FilterLink filter='SHOW_ALL' store={store}>
+        <FilterLink filter='SHOW_ALL'>
             all
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_ACTIVE' store={store}>
+        <FilterLink filter='SHOW_ACTIVE'>
             active
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_COMPLETED' store={store}>
+        <FilterLink filter='SHOW_COMPLETED'>
             completed
         </FilterLink>
 
@@ -248,23 +255,46 @@ const Footer = ({ store }) => (
 /**** TOP LEVEL COMPONANT ****/
 const TodoApp = ({ store }) => (
         <div>
-            {/* Les componants comtainers : */}
-            <AddTodo store={store} />
-            <VisibleTodoList store={store} />
-            <Footer store={store} />
+            {/* Les composants containers (sauf pour le Footer) : */}
+            <AddTodo />
+            <VisibleTodoList />
+            <Footer />
         </div>
 );
 
 
+/******************************* Context React (permet aux composants d'avoir accès au store) *****************************/
+import { Provider } from 'react-redux';
+
+Provider.childContextTypes = {
+    store: React.PropTypes.object
+};
+
+
+/** A tout les composants containers : **/
+VisibleTodoList.contextTypes = {
+    store: React.PropTypes.object
+};
+
+AddTodo.contextTypes = {
+    store: React.PropTypes.object
+};
+
+FilterLink.contextTypes = {
+    store: React.PropTypes.object
+};
 
 /******************************* LE STORE *****************************/
 import { createStore } from 'redux';
 
 
-// fonction qui va rendre les stats du store
+
+/******************************* RENDER TOP LEVEL *****************************/
 const render = () => {
     ReactDOM.render(
-        <TodoApp store={createStore(todoApp)} />, // chaque state est passé comme 'props'  => this.props.todos + this.props.visibilityFilter
+        <Provider store={createStore(todoApp)}>
+            <TodoApp />
+        </Provider>,
         document.getElementById('root')
     );
 };
