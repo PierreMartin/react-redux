@@ -163,7 +163,7 @@ let AddTodoCompo = ({ dispatch }) => {
     );
 };
 
-const AddTodo = connect(null, null)(AddTodoCompo); // AddTodo => presentational component
+const AddTodo = connect(null, null)(AddTodoCompo); // AddTodoCompo => presentational component
 
 
 /**** Filter todos
