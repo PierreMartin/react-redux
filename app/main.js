@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { createStore } from 'redux';
+
 
 
 /*************************** LES REDUCERS **************************/
@@ -63,9 +63,6 @@ const todoApp = combineReducers({
 });
 
 
-/******************************* LE STORE *****************************/
-const store = createStore(todoApp);
-
 
 /*************************** FUNCTIONS **************************/
 const getVisibleTodos = (todos, filter) => {
@@ -112,6 +109,7 @@ const TodoList = ({todos, onTodoClick}) => (
 
 class VisibleTodoList extends Component {
     componentDidMount() {
+        const { store } = this.props;
         this.unsubscribe = store.subscribe(() =>    /* rend le state dispatché */
             this.forceUpdate()                      /* methode react pour forcer le rendu à nouveau */
         );
@@ -123,6 +121,7 @@ class VisibleTodoList extends Component {
 
     render() {
         const props = this.props;
+        const { store } = props;
         const state = store.getState();
 
         return (
@@ -141,7 +140,7 @@ class VisibleTodoList extends Component {
 
 
 /**** Add todos ****/
-const AddTodo = () => {
+const AddTodo = ({ store }) => {
     let input;
 
     return (
@@ -191,6 +190,7 @@ const Link = ({active, children, onClick}) => {
 // Composant conteneur. Il fournit les données (sans passer par le parent) et le comportement pour "Link"
 class FilterLink extends Component {
     componentDidMount() {
+        const { store } = this.props;
         this.unsubscribe = store.subscribe(() =>    /* rend le state dispatché */
             this.forceUpdate()                      /* methode react pour forcer le rendu à nouveau */
         );
@@ -202,6 +202,7 @@ class FilterLink extends Component {
 
     render() {
         const props = this.props;
+        const { store } = props;
         const state = store.getState();
 
         return (
@@ -221,22 +222,22 @@ class FilterLink extends Component {
 }
 
 
-const Footer = () => (
+const Footer = ({ store }) => (
     <p>
         Show :
 
         {' '}
-        <FilterLink filter='SHOW_ALL'>
+        <FilterLink filter='SHOW_ALL' store={store}>
             all
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_ACTIVE'>
+        <FilterLink filter='SHOW_ACTIVE' store={store}>
             active
         </FilterLink>
 
         {' '}
-        <FilterLink filter='SHOW_COMPLETED'>
+        <FilterLink filter='SHOW_COMPLETED' store={store}>
             completed
         </FilterLink>
 
@@ -245,22 +246,28 @@ const Footer = () => (
 
 
 /**** TOP LEVEL COMPONANT ****/
-const TodoApp = ({todos, visibilityFilter}) => (
+const TodoApp = ({ store }) => (
         <div>
-            <AddTodo />
-            <VisibleTodoList />
-            <Footer />
+            {/* Les componants comtainers : */}
+            <AddTodo store={store} />
+            <VisibleTodoList store={store} />
+            <Footer store={store} />
         </div>
 );
+
+
+
+/******************************* LE STORE *****************************/
+import { createStore } from 'redux';
 
 
 // fonction qui va rendre les stats du store
 const render = () => {
     ReactDOM.render(
-        <TodoApp {...store.getState()} />, // chaque state est passé comme 'props'  => this.props.todos + this.props.visibilityFilter
+        <TodoApp store={createStore(todoApp)} />, // chaque state est passé comme 'props'  => this.props.todos + this.props.visibilityFilter
         document.getElementById('root')
     );
 };
 
-store.subscribe(render);
+// store.subscribe(render);
 render();
