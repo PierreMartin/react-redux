@@ -62,6 +62,30 @@ const todoApp = combineReducers({
 });
 
 
+/*************************** LES ACTIONS **************************/
+let nextTodoId = 0;
+
+const addTodo = (text) => {
+    return {
+        type: 'ADD_TODO',
+        id: nextTodoId++, /* "nextTodoId" (var globale) posais probleme AVANT si une autre action 'ADD_TODO' etait utilisé ailleur */
+        text
+    }
+};
+
+const setVisibilityFilter = (filter) => {
+    return {
+        type: 'SET_VISIBILITY_FILTER',
+        filter
+    }
+};
+
+const toggleTodo = (id) => {
+    return {
+        type: 'TOGGLE_TODO',
+        id
+    }
+};
 
 /*************************** FUNCTIONS **************************/
 const getVisibleTodos = (todos, filter) => {
@@ -80,7 +104,7 @@ const getVisibleTodos = (todos, filter) => {
 };
 
 /*************************** LES COMPONANTS **************************/
-let nextTodoId = 0;
+
 
 /**** Todos
  *
@@ -121,17 +145,13 @@ const mapDispatchToTodoListProps = (dispatch) => {
     /* retourne un props d'action passé a travers 'TodoList' */
     return {
         onTodoClick: (id) => {
-            dispatch({
-                type: 'TOGGLE_TODO',
-                id
-            })
+            dispatch(toggleTodo(id))
         }
     };
 };
 
 import { connect } from 'react-redux'
 const VisibleTodoList = connect(mapStateToTodoListProps, mapDispatchToTodoListProps)(TodoList); // TodoList => presentational component
-
 
 
 /**** Add todos
@@ -149,11 +169,7 @@ let AddTodoCompo = ({ dispatch }) => {
 
             <button
                 onClick={() => {
-                    dispatch({
-                      type: 'ADD_TODO',
-                      id: nextTodoId++,
-                      text: input.value
-                    })
+                    dispatch(addTodo(input.value));
                     input.value = '';
                 }}
             >
@@ -200,10 +216,7 @@ const mapDispatchToLinkProps = (dispatch, ownProps) => {
     /* retourne un props d'action passé a travers 'Link' */
     return {
         onClick: () => {
-            dispatch({
-                type: 'SET_VISIBILITY_FILTER',
-                filter: ownProps.filter
-            })
+            dispatch(setVisibilityFilter(ownProps.filter))
         }
     }
 };
