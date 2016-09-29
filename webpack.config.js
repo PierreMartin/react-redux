@@ -3,7 +3,7 @@ var root = path.resolve(__dirname);
 
 module.exports = {
     entry: {
-        app: ['./app/main.js']
+        app: ['./app/index.js']
     },
     output: {
         path: path.resolve(__dirname, './dist'),
