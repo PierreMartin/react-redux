@@ -15,3 +15,5 @@ Please change branch to see the different stages of evolution :
 - [step 3](https://github.com/PierreMartin/react-redux/tree/step3/app)
 - [step 4](https://github.com/PierreMartin/react-redux/tree/step4/app)
 - [step 5](https://github.com/PierreMartin/react-redux/tree/step5/app)
+- [step 6](https://github.com/PierreMartin/react-redux/tree/step6/app)
+- [step 7 - refactorisation code](https://github.com/PierreMartin/react-redux/tree/step7-refactorisation/app)
