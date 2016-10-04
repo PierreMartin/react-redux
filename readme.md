@@ -2,4 +2,4 @@
 - $ sudo npm install
 
 ### run server + hot reload :
-- $ npm dev
+- $ npm start
