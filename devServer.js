@@ -12,9 +12,9 @@ var port = 3000;
 config.entry.app.unshift("webpack-dev-server/client?http://localhost:" + port + "/", "webpack/hot/dev-server");
 
 
-/*
+
 // permet le rechargement des pages sur des url specifié par react-router : TODO : ne permet pas d'utiliser le hot reload!
-app.use(webpackDevMiddleware(compiler, {
+/*app.use(webpackDevMiddleware(compiler, {
     contentBase: './',
     quiet: false,
     noInfo: false,
@@ -24,8 +24,8 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.get('/!*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
-});
-*/
+});*/
+
 
 
 // Hot reload :

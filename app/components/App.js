@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Footer from './Footer';
 import AddTodo from './AddTodo';
 import VisibleTodoList from './VisibleTodoList';
 
-const App = ({ params }) => (
+const App = () => (
     <div>
         <AddTodo />
-        <VisibleTodoList filter={params.filter || 'all'} />         {/* 'params.filter' récupere le parametre de l'url */}
+        <VisibleTodoList />
         <Footer />
     </div>
 );
+
+App.propTypes = {
+    params: PropTypes.shape({
+        filter: PropTypes.string
+    })
+};
 
 export default App;

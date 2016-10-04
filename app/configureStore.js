@@ -13,7 +13,7 @@ const configureStore = () => {
         saveState({
             todos: store.getState().todos
         });
-    }), 1000);
+    }, 1000));
 
     return store;
 };
