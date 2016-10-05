@@ -6,7 +6,7 @@ import throttle from 'lodash/throttle';
 const configureStore = () => {
     const persistedState = loadState();
     const store = createStore(todoApp, persistedState);
-    console.log(store.getState());
+    // console.log(store.getState());
 
     // fonction appelé à chaque fois que l'etat du localstorage change - 'throttle' va résoudre le probleme de chargement tres répété :
     store.subscribe(throttle(() => {
