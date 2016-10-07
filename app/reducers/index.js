@@ -18,12 +18,17 @@ const todos = combineReducers({
 export default todos;
 
 
-
 /************ pour obtenir un array de todos ************/
 export const getVisibleTodos = (state, filter) => {
-    const ids = fromList.getIds(state.listByFilter[filter]);
+    const ids = fromList.getIds(state.listByFilter[filter]);    // fonction defini dans le reducer 'createList.js'
 
     return ids.map(id => {
-        return fromById.getTodo(state.byId, id);
+        return fromById.getTodo(state.byId, id);                // fonction defini dans le reducer 'byId.js'
     });
+};
+
+
+/************ pour le loading ************/
+export const getIsFetching = (state, filter) => {
+    return fromList.getIsFetching(state.listByFilter[filter]); // fonction defini dans le reducer 'createList.js' qui retournera juste 'true / false'
 };
