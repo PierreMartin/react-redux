@@ -32,3 +32,9 @@ export const getVisibleTodos = (state, filter) => {
 export const getIsFetching = (state, filter) => {
     return fromList.getIsFetching(state.listByFilter[filter]); // fonction defini dans le reducer 'createList.js' qui retournera juste 'true / false'
 };
+
+
+/************ pour les erreurs ************/
+export const getErrorMessage = (state, filter) => {
+    return fromList.getErrorMessage(state.listByFilter[filter]);
+};

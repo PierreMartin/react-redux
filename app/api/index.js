@@ -32,6 +32,9 @@ const delay = (ms) => {
 
 export const fetchTodos = (filter) =>
     delay(500).then(() => {
+
+        throw new Error('Boommmm!'); // TODO: pour tester les exeptions
+
         switch (filter) {
             case 'all':
                 return fakeDatabase.todos;

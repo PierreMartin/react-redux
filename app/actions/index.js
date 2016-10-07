@@ -2,18 +2,6 @@ import { v4 } from 'node-uuid';
 import { getIsFetching } from '../reducers';
 import * as api from '../api';
 
-// start fetching :
-const requestTodos = (filter) => ({
-    type: 'REQUEST_TODOS',
-    filter
-});
-
-// finish fetching :
-const receiveTodos = (filter, response) => ({
-    type: 'RECEIVE_TODOS',
-    filter,
-    response
-});
 
 // fonction utilisé dans le composant 'VisibleTodoList.js' - sa valeur de retour est une fonction :
 export const fetchTodos = (filter) => {
@@ -24,10 +12,30 @@ export const fetchTodos = (filter) => {
             return Promise.resolve();
         }
 
-        dispatch(requestTodos((filter)));                       // 1) async operation ('thunk' dans configStore.js)
+        // start fetching :
+        dispatch({                                              // 1) async operation ('thunk' dans configStore.js)
+            type: 'FETCH_TODOS_REQUEST',
+            filter
+        });
 
-        return api.fetchTodos(filter).then(response =>
-            dispatch(receiveTodos(filter, response))            // 2) async operation ('thunk' dans configStore.js)
+        // finish fetching :
+        return api.fetchTodos(filter).then(
+            // 1er param - success :
+            response => {
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js)
+                    type: 'FETCH_TODOS_SUCCESS',
+                    filter,
+                    response
+                })
+            },
+            // 2em param - error :
+            error => {
+                dispatch({
+                    type: 'FETCH_TODOS_FAILURE',
+                    filter,
+                    message: error.message || 'something went wrong from server'
+                });
+            }
         );
     }
 };
