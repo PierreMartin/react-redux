@@ -1,12 +1,8 @@
 # Install :
 - $ sudo npm install
 
-### Builder :
-- $ webpack
-
-### Builder + hot reload + server :
-- $ webpack-dev-server --hot --inline --content-base ./
-- localhost:8080
+### run server + hot reload :
+- $ npm start
 
 Please change branch to see the different stages of evolution :
 

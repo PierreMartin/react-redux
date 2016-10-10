@@ -1,9 +1,10 @@
-var path = require('path');
-var root = path.resolve(__dirname);
+var path        = require('path');
+var root        = path.resolve(__dirname);
+var webpack     = require('webpack');
 
 module.exports = {
     entry: {
-        app: ['./app/main.js']
+        app: ['./app/index.js']
     },
     output: {
         path: path.resolve(__dirname, './dist'),
@@ -21,8 +22,12 @@ module.exports = {
                 loader: 'babel',
                 include: root    // on appel le fichier ".babelrc" ici
             }
-            // JSX :
 
         ]
-    }
+    },
+
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    ]
 };
