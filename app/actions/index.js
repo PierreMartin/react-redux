@@ -1,3 +1,5 @@
+import { normalize } from 'normalizr';          // normalizing API Responses
+import * as schema from './schema';             // normalizing API Responses
 import { getIsFetching } from '../reducers';
 import * as api from '../api';
 
@@ -21,10 +23,11 @@ export const fetchTodos = (filter) => {
         return api.fetchTodos(filter).then(
             // 1er param - success :
             response => {
-                dispatch({                                      // 2) async operation ('thunk' dans configStore.js)
+                // console.log( 'normalize response : ', normalize(response, schema.arrayOfTodos) );
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers
                     type: 'FETCH_TODOS_SUCCESS',
                     filter,
-                    response
+                    response: normalize(response, schema.arrayOfTodos)
                 })
             },
             // 2em param - error :
@@ -44,9 +47,10 @@ export const addTodo = (text) => {
         return api.addTodo(text).then(
             // success :
             response => {
-                dispatch({                                      // 2) async operation ('thunk' dans configStore.js)
+                // console.log( 'normalize response : ', normalize(response, schema.todo) );
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers
                     type: 'ADD_TODO_SUCCESS',
-                    response
+                    response: normalize(response, schema.todo)
                 })
             }
         );

@@ -23,6 +23,7 @@
   "dependencies": {
     "lodash": "^4.16.3",
     "node-uuid": "^1.4.7",
+    "normalizr": "^2.2.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-redux": "^4.4.5",

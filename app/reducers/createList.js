@@ -6,9 +6,9 @@ const createList = (filter) => {
     const ids = (state = [], action) => {
         switch (action.type) {
             case 'FETCH_TODOS_SUCCESS':
-                return filter === action.filter ? action.response.map(todo => todo.id) : state;
+                return filter === action.filter ? action.response.result : state;
             case 'ADD_TODO_SUCCESS':
-                return filter !== 'completed' ? [...state, action.response.id] : state; // sans cette condition, les todos ajouté seraient visible même si le filtre est à 'completed'
+                return filter !== 'completed' ? [...state, action.response.result] : state; // sans cette condition, les todos ajouté seraient visible même si le filtre est à 'completed'
             default:
                 return state;
         }
