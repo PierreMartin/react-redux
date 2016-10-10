@@ -24,7 +24,7 @@ export const fetchTodos = (filter) => {
             // 1er param - success :
             response => {
                 // console.log( 'normalize response : ', normalize(response, schema.arrayOfTodos) );
-                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers en faisant 'action.response.result...'
                     type: 'FETCH_TODOS_SUCCESS',
                     filter,
                     response: normalize(response, schema.arrayOfTodos)
@@ -48,7 +48,7 @@ export const addTodo = (text) => {
             // success :
             response => {
                 // console.log( 'normalize response : ', normalize(response, schema.todo) );
-                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers en faisant 'action.response.result...'
                     type: 'ADD_TODO_SUCCESS',
                     response: normalize(response, schema.todo)
                 })
@@ -57,7 +57,17 @@ export const addTodo = (text) => {
     }
 };
 
-export const toggleTodo = (id) => ({
-    type: 'TOGGLE_TODO',
-    id
-});
+export const toggleTodo = (id) => {
+    return (dispatch) => {
+        return api.toggleTodo(id).then(
+            // success :
+            response => {
+                // console.log( 'normalize response : ', normalize(response, schema.todo) );
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js) la reponse va être utilisé dans les reducers en faisant 'action.response.result...'
+                    type: 'TOGGLE_TODO_SUCCESS',
+                    response: normalize(response, schema.todo)
+                })
+            }
+        );
+    }
+};
