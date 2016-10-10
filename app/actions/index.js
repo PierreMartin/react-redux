@@ -1,4 +1,3 @@
-import { v4 } from 'node-uuid';
 import { getIsFetching } from '../reducers';
 import * as api from '../api';
 
@@ -40,11 +39,19 @@ export const fetchTodos = (filter) => {
     }
 };
 
-export const addTodo = (text) => ({
-    type: 'ADD_TODO',
-    id: v4(),
-    text
-});
+export const addTodo = (text) => {
+    return (dispatch) => {
+        return api.addTodo(text).then(
+            // success :
+            response => {
+                dispatch({                                      // 2) async operation ('thunk' dans configStore.js)
+                    type: 'ADD_TODO_SUCCESS',
+                    response
+                })
+            }
+        );
+    }
+};
 
 export const toggleTodo = (id) => ({
     type: 'TOGGLE_TODO',

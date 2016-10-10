@@ -4,13 +4,11 @@ import { combineReducers } from 'redux';
 // cette méthode retournera l'id des todos en fonction du filtre :
 const createList = (filter) => {
     const ids = (state = [], action) => {
-        if (action.filter !== filter) {
-            return state;
-        }
-
         switch (action.type) {
             case 'FETCH_TODOS_SUCCESS':
-                return action.response.map(todo => todo.id);
+                return filter === action.filter ? action.response.map(todo => todo.id) : state;
+            case 'ADD_TODO_SUCCESS':
+                return filter !== 'completed' ? [...state, action.response.id] : state; // sans cette condition, les todos ajouté seraient visible même si le filtre est à 'completed'
             default:
                 return state;
         }
